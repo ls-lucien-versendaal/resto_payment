@@ -1,22 +1,3 @@
-<?php
-$username = null;
-$password = null;
-// mod_php
-if (isset($_SERVER['PHP_AUTH_USER'])) {
-    $username = $_SERVER['PHP_AUTH_USER'];
-    $password = $_SERVER['PHP_AUTH_PW'];
-// most other servers
-} elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-        if (strpos(strtolower($_SERVER['HTTP_AUTHORIZATION']),'basic')===0)
-          list($username,$password) = explode(':',base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
-}
-if (is_null($username)) {
-    header('WWW-Authenticate: Basic realm="My Realm"');
-    header('HTTP/1.0 401 Unauthorized');
-    echo 'Invalid username or password';
-    die();
-}
-?>
 <html>
   <head>
     <title>Lightspeed External Payments Test</title>
@@ -26,8 +7,7 @@ if (is_null($username)) {
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-    <script src="jquery-1.11.3.min.js"></script>
-    <style>
+    <script src="jquery-1.11.3.min.js"></script>    <style>
         @media(min-width: 768px) {
           .flex {
             display: flex;
@@ -36,12 +16,8 @@ if (is_null($username)) {
           body {
               font-family: 'Source Sans Pro', sans-serif;
           }
-        }
-    </style>
-  </head>
-<body onload="registerHandlers()">
-    <script>
-        function paymentConfirmed(form, requestId) {
+        }    </style>
+  </head><body onload="registerHandlers()">    <script>        function paymentConfirmed(form, requestId) {
           console.log("1")
           var confirmation = {}
           console.log("2")
@@ -53,22 +29,17 @@ if (is_null($username)) {
           console.log("5")
           LightspeedRestaurant.actions.confirmPayment(confirmation)
           console.log("6")
-        }
-        function paymentCanceled(requestId) {
+        }        function paymentCanceled(requestId) {
           var cancelation = {}
           cancelation.requestId = requestId
           LightspeedRestaurant.actions.cancelPayment(cancelation)
-        }
-        function registerHandlers() {
+        }        function registerHandlers() {
             LightspeedRestaurant.callbacks.cancelPayment = function(context) {
               var requestId = context.requestId
               alert("Payment cancelled. Request Id = " + requestId);
-            }
-            LightspeedRestaurant.callbacks.startPayment = function(context) {
-                var requestId = context.requestId
+            }            LightspeedRestaurant.callbacks.startPayment = function(context) {                var requestId = context.requestId
                 var customer = context.customer
-                var receipt = context.receipt
-                var header = "<tr>"
+                var receipt = context.receipt                var header = "<tr>"
                   + "<th>Amount</th>"
                   + "<th>Name</th>"
                   + "<th>Price</th>"
@@ -78,8 +49,7 @@ if (is_null($username)) {
                   + "<th>parent UUID</th>"
                   + "<th>PLU</th>"
                   + "<th>ProductId</th>"
-                  + "</tr>"
-                var rowsHTML = receipt.items.map( item =>
+                  + "</tr>"                var rowsHTML = receipt.items.map( item =>
                   "<tr> <td>"
                     + item.amount
                     + "</td> <td>"
@@ -100,17 +70,14 @@ if (is_null($username)) {
                     + item.productId
                     + "</td> </tr>"
                   )
-                  .reduce( (accumulator, value) => accumulator + value )
-                var customerDetails = ""
-                if (typeof customer !== 'undefined') {
+                  .reduce( (accumulator, value) => accumulator + value )                var customerDetails = ""                if (typeof customer !== 'undefined') {
                   customerDetails += ("<p>CustomerId # " + customer.customerId + "</p>"
                     + "<p>email " + customer.email + "</p>"
                     + "<p>first " + customer.firstName + "</p>"
                     + "<p>last " + customer.lastName + "</p>"
                     + "<p>phone " + customer.telephone + "</p>"
                     + "<br>")
-                }
-                document.getElementById("request").innerHTML =
+                }                document.getElementById("request").innerHTML =
                   "<h1>Payment Request Details:</h1>"
                   + "<p>Request Id " + requestId + "</p>"
                   + customerDetails
@@ -141,28 +108,16 @@ if (is_null($username)) {
                   + "<input type=\"button\" name=\"button\" value=\"Confirm Payment\" onClick=\"paymentConfirmed(this.form, '" + requestId + "')\">"
                   + "<input type=\"button\" name=\"cancel\" value=\"Cancel\" onClick=\"paymentCanceled('" + requestId + "')\">"
                   + "</form>"
-            }
-        }
-    </script>
-    <div class="p-5">
+            }        }
+    </script>    <div class="p-5">
       <div class="container text-center">
         <img src="https://euc1-web.posios.com/management/en-US/assets/img/logos/lightspeed-vertical.png" width="200px"/>
-        <h1>External Payments Test</h1>
-      </div>
-      <hr/>
-    <p>Click the button to display an alert box.</p>
-    <button onclick="myFunction()">Alert</button>
-    <br/>
-    <script>
+        <h1>External Payments Test PHP</h1>
+      </div>      <hr/>    <p>Click the button to display an alert box.</p>    <button onclick="myFunction()">Alert</button>    <br/>    <script>
     function myFunction() {
       alert("Hello! I am an alert box!");
     }
-    </script>
-    <p>Click the button to display a confirm box.</p>
-    <button onclick="confirmIt()">Confirm it</button>
-    <br/>
-    <p id="confirmResult"></p>
-    <script>
+    </script>    <p>Click the button to display a confirm box.</p>    <button onclick="confirmIt()">Confirm it</button>    <br/>    <p id="confirmResult"></p>    <script>
     function confirmIt() {
       var r = confirm("Press a button!");
       if (r == true) {
@@ -171,12 +126,7 @@ if (is_null($username)) {
           document.getElementById("confirmResult").innerHTML = "You pressed Cancel!"
       }
     }
-    </script>
-    <p>Click the button to display a prompt</p>
-    <button onclick="promptIt()">Prompt</button>
-    <br/>
-    <p id="demo"></p>
-    <script>
+    </script>    <p>Click the button to display a prompt</p>    <button onclick="promptIt()">Prompt</button>    <br/>    <p id="demo"></p>    <script>
     function promptIt() {
       var person = prompt("Please enter your name", "Harry Potter");
       if (person != null) {
@@ -184,7 +134,5 @@ if (is_null($username)) {
         "Hello " + person + "! How are you today?";
       }
     }
-    </script>
-  <p id="request"></p>
-</body>
+    </script>  <p id="request"></p></body>
 </html>
